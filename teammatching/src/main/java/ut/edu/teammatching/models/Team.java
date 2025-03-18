@@ -47,6 +47,8 @@ public class Team {
     @JoinColumn(name = "leader_id", nullable = false)
     private Student leader;
 
+    @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Message>  messages = new ArrayList<>();
     /** 🔥 Kiểm tra ràng buộc: Nếu team là Academic thì phải có giảng viên */
     @PrePersist
     @PreUpdate
