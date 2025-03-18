@@ -1,10 +1,14 @@
 package ut.edu.teammatching.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import ut.edu.teammatching.enums.Gender;
+import ut.edu.teammatching.enums.Role;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +17,12 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name="student")
+@AllArgsConstructor
 public class Student extends User {
-    @Column(name = "major", nullable = false)
+    @Column(name = "major")
     private String major;
 
-    @Column(name = "term", nullable = false)
+    @Column(name = "term")
     private Integer term;
 
     @ManyToMany
@@ -39,4 +44,8 @@ public class Student extends User {
 
     @OneToMany(mappedBy = "leader", cascade =  CascadeType.ALL, orphanRemoval = true)
     private List<Team> leaders = new ArrayList<>();
+
+    public Student() {
+        this.setRole(Role.STUDENT);
+    }
 }

@@ -1,13 +1,11 @@
 package ut.edu.teammatching.models;
-import ut.edu.teammatching.enums.NotificationType;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import ut.edu.teammatching.enums.Gender;
+import ut.edu.teammatching.enums.NotificationType;
 
 import java.time.Instant;
 
@@ -18,7 +16,7 @@ import java.time.Instant;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notificationId", nullable = false)
+    @Column(name = "notification_id", nullable = false)
     private Long id;
 
     @Lob
@@ -31,18 +29,26 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "recipientId", nullable = false)
+    @JoinColumn(name = "recipient_id", nullable = false)
     private User recipient;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdAt")
+    @Column(name = "created_at", updatable = false, nullable = false)
     private Instant createdAt;
 
-    @ColumnDefault("0")
-    @Column(name = "isRead")
-    private Boolean isRead;
+    @Column(name = "is_read", nullable = false)
+    private Boolean isRead = false;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+        if (isRead == null) {
+            isRead = false;
+        }
+    }
 }
