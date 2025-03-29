@@ -3,7 +3,6 @@ package ut.edu.teammatching.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ut.edu.teammatching.models.User;
 import ut.edu.teammatching.services.UserService;
 
 import java.util.List;

@@ -17,8 +17,8 @@ public class TeamService {
         return teamRepository.findAll();
     }
 
-    public Optional<Team> getTeamById(Long id) {
-        return teamRepository.findById(id);
+    public Optional<Team> getTeamById(Long teamId) {
+        return teamRepository.findById(teamId);
     }
 
     public Team createTeam(Team team) {

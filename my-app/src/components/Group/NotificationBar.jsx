@@ -1,6 +1,7 @@
 import { Users, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 
+
 // Notification Bar Component
 const NotificationBar = ({ groupName, notificationCount }) => (
   <div className="flex items-center justify-between bg-white p-4 rounded-xl shadow-md mb-4">

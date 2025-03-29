@@ -3,7 +3,7 @@ package ut.edu.teammatching.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ut.edu.teammatching.repositories.UserRepository;
-import ut.edu.teammatching.models.User;
+
 import java.util.List;
 
 @Service
@@ -17,8 +17,9 @@ public class UserService {
     }
 
     //lay thong tin user theo id
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     //lay thong tin user theo username

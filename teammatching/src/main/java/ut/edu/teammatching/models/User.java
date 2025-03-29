@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import ut.edu.teammatching.enums.Gender;
 import ut.edu.teammatching.enums.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,11 @@ import org.hibernate.annotations.BatchSize;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "role")  // Phân biệt bằng role
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Student.class, name = "STUDENT"),
         @JsonSubTypes.Type(value = Lecturer.class, name = "LECTURER")
@@ -42,6 +47,7 @@ public abstract class User {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
+    @JsonProperty("role") // 🔥 Đảm bảo Spring Boot hiểu đúng key JSON
     private Role role;
 
     @Column(name = "fullName")
@@ -72,7 +78,7 @@ public abstract class User {
     @BatchSize(size = 10)
     private List<String> projects = new ArrayList<>();
 
-    @Column(name = "phoneNumber", length = 20, unique = true)
+    @Column(name = "phoneNumber", length = 20, unique = true )
     private String phoneNumber;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -99,19 +105,24 @@ public abstract class User {
     @JsonIgnore
     private List<Message> receivedMessages = new ArrayList<>();
 
-    public User(String username, String password, Role role, String fullName, Gender gender,
-                String profilePicture, String email, List<String> skills,
+    public User(String username, String fullName, String email, String password, Role role, Gender gender,
+                String profilePicture, List<String> skills,
                 List<String> hobbies, List<String> projects, String phoneNumber) {
         this.username = username;
-        this.password = password;
-        this.role = role; // Đảm bảo role luôn có giá trị
         this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
         this.gender = gender;
         this.profilePicture = profilePicture;
-        this.email = email;
+
         this.skills = skills;
         this.hobbies = hobbies;
         this.projects = projects;
-        this.phoneNumber = phoneNumber;
+
+        // Nếu phoneNumber là null hoặc rỗng, có thể để null hoặc giá trị mặc định
+        this.phoneNumber = (phoneNumber == null || phoneNumber.isBlank())
+                ? null
+                : phoneNumber;
     }
 }
