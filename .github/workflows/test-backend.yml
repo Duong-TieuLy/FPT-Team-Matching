@@ -8,7 +8,7 @@ on:
       - dev-frontend
       - Add-jwt
       - fix-e
-      - Testteamtask
+      - TestAdmin
   pull_request:
     branches:
       - main

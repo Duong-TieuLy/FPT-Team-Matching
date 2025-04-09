@@ -22,6 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRole(Role role);
     boolean existsByUsername(String username);
     long countByRole(Role role);
+    List<User> findByIsActive(boolean isActive);
 
     // Kiểm tra username đã tồn tại chưa
 //    boolean existsByUsername(String username);
@@ -33,7 +34,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Tìm kiếm user theo keyword (JPQL thay vì nativeQuery)
     @Query("SELECT u FROM User u WHERE " +
-            "LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+           "LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(u.skills) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<User> searchUsers(String keyword);
 }

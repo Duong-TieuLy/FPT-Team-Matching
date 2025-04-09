@@ -62,6 +62,8 @@ public abstract class User {
     @Column(name = "email", unique = true)
     private String email;
 
+    private boolean isActive = true;
+
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "skill")
