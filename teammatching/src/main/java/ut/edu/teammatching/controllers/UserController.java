@@ -3,6 +3,8 @@ package ut.edu.teammatching.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ut.edu.teammatching.models.Lecturer;
+import ut.edu.teammatching.models.Student;
 import ut.edu.teammatching.models.User;
 import ut.edu.teammatching.services.UserService;
 
@@ -44,10 +46,16 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // Cập nhật thông tin user
+    // Cập nhật thông tin user (gộp cả logic cập nhật Student và Lecturer)
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
+        if (user instanceof Student) {
+            return ResponseEntity.ok(userService.updateStudent(id, (Student) user));
+        } else if (user instanceof Lecturer) {
+            return ResponseEntity.ok(userService.updateLecturer(id, (Lecturer) user));
+        } else {
+            return ResponseEntity.ok(userService.updateUser(id, user));
+        }
     }
 
     // Xóa user theo ID
@@ -55,5 +63,17 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Cập nhật riêng Student
+    @PutMapping("/student/{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
+        return ResponseEntity.ok(userService.updateStudent(id, student));
+    }
+
+    // Cập nhật riêng Lecturer
+    @PutMapping("/lecturer/{id}")
+    public ResponseEntity<Lecturer> updateLecturer(@PathVariable Long id, @RequestBody Lecturer lecturer) {
+        return ResponseEntity.ok(userService.updateLecturer(id, lecturer));
     }
 }
