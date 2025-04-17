@@ -8,6 +8,7 @@ on:
       - dev-frontend
       - Add-jwt
       - fix-e
+      - jwt
   pull_request:
     branches:
       - main

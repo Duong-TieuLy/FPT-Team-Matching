@@ -9,6 +9,8 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class JwtChannelInterceptor implements ChannelInterceptor {
 

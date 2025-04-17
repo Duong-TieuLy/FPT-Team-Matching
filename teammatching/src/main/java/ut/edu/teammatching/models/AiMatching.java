@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "AI_Matching")
+@Table(name = "ai_matching")
 @Getter
 @Setter
 public class AiMatching {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "matchId", nullable = false)
+    @Column(name = "match_id", nullable = false)
     private Long id;
 
     @OneToMany(mappedBy = "aiMatching", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -26,13 +26,19 @@ public class AiMatching {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "suggestedTeamId", nullable = false)
+    @JoinColumn(name = "suggested_team_id", nullable = false)
     private Team suggestedTeam;
 
-    @Column(name = "matchScore", nullable = false)
+    @Column(name = "match_score", nullable = false)
     private Float matchScore;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
     private Instant createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+    }
 }
