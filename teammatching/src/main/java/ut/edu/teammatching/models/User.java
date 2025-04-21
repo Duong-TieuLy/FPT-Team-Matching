@@ -10,6 +10,7 @@ import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -105,11 +106,11 @@ public abstract class User {
 
     @OneToMany(mappedBy = "requester")
     @JsonManagedReference
-    private List<Friend> sentFriendRequests;
+    private Set<Friend> sentFriendRequests;
 
     @OneToMany(mappedBy = "receiver")
     @JsonManagedReference
-    private List<Friend> receivedFriendRequests;
+    private Set<Friend> receivedFriendRequests;
 
     public User(String username, String fullName, String email, String password, Role role, Gender gender,
                 String profilePicture, List<String> skills,

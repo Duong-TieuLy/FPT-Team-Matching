@@ -1,45 +1,34 @@
-import { useState, useEffect, useRef } from "react";
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+import { useState, useEffect } from "react";
+import useWebSocket from "../../websocket.js";
 
-const GroupChatBox = ({ groupName, teamId }) => {
+const GroupChatBox = ({ groupName, teamId, currentUser }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
-    const stompClient = useRef(null);
+
+    const { sendMessage } = useWebSocket(
+        (msg) => {
+            setMessages((prev) => [...prev, msg]);
+        },
+        `/topic/team/${teamId}`
+    );
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8080/ws");
-        stompClient.current = new Client({
-            webSocketFactory: () => socket,
-            reconnectDelay: 5000,
-            onConnect: () => {
-                // Subscribe to the group chat (team) channel
-                stompClient.current.subscribe(`/topic/team.${teamId}`, (message) => {
-                    const newMessage = JSON.parse(message.body);
-                    setMessages((prev) => [...prev, newMessage]);
-                });
-            },
-        });
-        stompClient.current.activate();
-
-        return () => stompClient.current.deactivate(); // Cleanup on unmount
+        fetch(`/api/messages/team/${teamId}`)
+            .then((res) => res.json())
+            .then((data) => setMessages(data));
     }, [teamId]);
 
-    const handleSendMessage = () => {
-        if (input.trim()) {
-            const newMessage = { sender: "You", text: input };
-            setMessages([...messages, newMessage]);
-
-            stompClient.current.publish({
-                destination: "/app/chat.send",
-                body: JSON.stringify({
-                    teamId: teamId,
-                    content: input,
-                }),
-            });
-
-            setInput("");
-        }
+    const handleSend = () => {
+        if (!input.trim()) return;
+        const msg = {
+            senderId: currentUser.id,
+            teamId: teamId,
+            content: input,
+            messageType: "TEAM",
+        };
+        sendMessage(`/app/team`, msg);
+        setMessages((prev) => [...prev, { ...msg, senderId: currentUser }]);
+        setInput("");
     };
 
     return (
@@ -47,9 +36,16 @@ const GroupChatBox = ({ groupName, teamId }) => {
             <h3 className="text-lg font-semibold mb-2">Chat nhóm: {groupName}</h3>
             <div className="h-64 overflow-y-auto p-2 bg-white rounded-lg mb-2">
                 {messages.map((message, index) => (
-                    <div key={index} className="mb-1 p-2 rounded-lg bg-blue-100 text-gray-700">
-                        <span className="font-semibold">{message.sender}: </span>
-                        {message.text}
+                    <div
+                        key={index}
+                        className={`mb-1 p-2 rounded-lg ${
+                            message.senderId?.id === currentUser.id
+                                ? "bg-blue-100 text-right"
+                                : "bg-gray-200 text-left"
+                        }`}
+                    >
+                        <span className="font-semibold">{message.senderId?.name || "Bạn"}: </span>
+                        {message.content}
                     </div>
                 ))}
             </div>
@@ -59,10 +55,10 @@ const GroupChatBox = ({ groupName, teamId }) => {
                     placeholder="Nhập tin nhắn..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="flex-1 p-2 border border-gray-300 rounded-md"
                 />
                 <button
-                    onClick={handleSendMessage}
+                    onClick={handleSend}
                     className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
                     Gửi

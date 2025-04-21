@@ -1,63 +1,59 @@
 package ut.edu.teammatching.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "message")
+@Table(name = "messages")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "messageId", nullable = false)
     private Long id;
 
-    @Column(name = "sentAt", nullable = false, updatable = false)
-    @CreationTimestamp
-    private Instant sentAt;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "senderId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "receiverId")
-    private User receiver;  // nullable để không bắt buộc khi gửi cho team
+    @JoinColumn(name = "receiver_id")
+    private User receiver; // Nullable nếu là tin nhắn nhóm
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "teamId")
-    private Team team;  // nullable để không bắt buộc khi gửi cho người dùng
+    @JoinColumn(name = "team_id")
+    private Team team; // Nullable nếu là tin nhắn riêng
 
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @CreationTimestamp
+    private Instant sentAt;
 
-    // Constructor helper method để xác định loại tin nhắn (Private hay Team)
-    @Transient
-    public String getType() {
-        if (receiver != null && team == null) {
-            return "PRIVATE";
-        } else if (receiver == null && team != null) {
-            return "TEAM";
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MessageType type;
+
+    @PrePersist
+    protected void onCreate() {
+        if (sentAt == null) {
+            sentAt = Instant.now();
         }
-        return "UNKNOWN";  // Trường hợp không xác định
+    }
+
+    public enum MessageType {
+        PRIVATE, // Tin nhắn riêng
+        TEAM     // Tin nhắn nhóm
     }
 }
