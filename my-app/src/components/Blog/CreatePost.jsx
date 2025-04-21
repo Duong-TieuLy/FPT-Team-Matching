@@ -1,25 +1,58 @@
 import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
+import axios from "axios";
+
 const CreateBlog = () => {
   const [blogText, setBlogText] = useState("");
   const [image, setImage] = useState(null);
-  const { isLoggedIn, user } = useAuth();
+  const { user, token } = useAuth(); // Lấy thông tin người dùng từ context
   if (!user) return null;
 
   // Xử lý khi chọn ảnh
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file)); // Hiển thị ảnh trước khi upload
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result); // base64 string
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   // Xử lý gửi bài viết
-  const handleSubmit = () => {
-    console.log("Bài đăng:", blogText, "Ảnh:", image);
-    // Sau này có thể gọi API upload ở đây
-    setBlogText("");
-    setImage(null);
+  const handleSubmit = async () => {
+    if (!blogText.trim()) return;
+
+    const payload = {
+      content: blogText,
+      images: image || null, // Send single base64 string or null
+      userId: user.id,
+    };
+    try {
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      const response = await axios.post(
+        "http://localhost:8080/api/blogs",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // Không cần Authorization nữa
+          },
+        }
+      );
+
+      console.log("Blog created:", response.data);
+
+      // Reset form
+      setBlogText("");
+      setImage(null);
+    } catch (err) {
+      console.error("Error creating blog:", err.response?.data || err.message);
+    }
   };
 
   return (

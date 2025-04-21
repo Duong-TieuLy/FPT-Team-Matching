@@ -1,6 +1,8 @@
 package ut.edu.teammatching.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import ut.edu.teammatching.models.Lecturer;
 import ut.edu.teammatching.models.Student;
 import ut.edu.teammatching.models.User;
@@ -10,6 +12,8 @@ import ut.edu.teammatching.dto.StudentDetailDTO;
 import java.util.List;
 
 @Data
+@Getter
+@NoArgsConstructor
 public class UserDTO {
     private Long id;
     private String username;
@@ -45,7 +49,12 @@ public class UserDTO {
             this.userID = new LecturerDetailDTO(lecturer);
         }
     }
+
     public static UserDTO fromUser(User user) {
         return new UserDTO(user);
+    }
+    public UserDTO(Long id, String fullName) {
+        this.id = id;
+        this.fullName = fullName;
     }
 } 

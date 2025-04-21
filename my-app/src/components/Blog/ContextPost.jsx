@@ -26,6 +26,7 @@ const MainContent = () => {
         {blogs.map((blog) => (
           <BlogItem
             key={blog.id}
+            postId={blog.id}
             name={blog.author.fullName}
             avatar={blog.author.profilePicture}
             time={blog.createdAt}

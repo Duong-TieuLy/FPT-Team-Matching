@@ -16,7 +16,7 @@ const ProfileStudent = () => {
         <div className="h-40 bg-gradient-to-r from-orange-200 to-blue-200 relative">
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-24 h-24 border-4 border-white rounded-full overflow-hidden">
             <img
-              src="/avata.jpg"
+              src={user.profilePicture}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -25,21 +25,15 @@ const ProfileStudent = () => {
 
         {/* Profile Info */}
         <div className="mt-14 mb-7 text-center">
-          <h2 className="text-xl font-semibold text-cyan-950">Student Name</h2>
+          <h2 className="text-xl font-semibold text-cyan-950">
+            {user.fullName}
+          </h2>
 
           {/* Stats */}
           <div className="flex justify-center gap-6 mt-4">
             <div className="text-center">
-              <p className="text-lg font-semibold text-gray-600">11</p>
-              <p className="text-gray-500 text-sm">Followers</p>
-            </div>
-            <div className="text-center">
-              <p className="text-lg font-semibold text-gray-600">35</p>
-              <p className="text-gray-500 text-sm">Post</p>
-            </div>
-            <div className="text-center">
-              <p className="text-lg font-semibold text-gray-600">46</p>
-              <p className="text-gray-500 text-sm">Following</p>
+              <p className="text-lg font-semibold text-gray-600">Biệt danh</p>
+              <p className="text-gray-500 text-sm">Không có</p>
             </div>
           </div>
         </div>
@@ -98,12 +92,8 @@ const ProfileStudent = () => {
               <PostCaNhan />
             </>
           )}
-          {activeTab === "About" && role === "Bret" && (
-            <AboutStudent className="w-full" />
-          )}
-          {activeTab === "Friends" && role === "Bret" && (
-            <FriendsList className="w-full" />
-          )}
+          {activeTab === "About" && <AboutStudent className="w-full" />}
+          {activeTab === "Friends" && <FriendsList className="w-full" />}
         </div>
 
         {/* Photo Section - Chỉ hiển thị khi ở tab Timeline */}

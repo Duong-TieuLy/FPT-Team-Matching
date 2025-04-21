@@ -1,10 +1,11 @@
 package ut.edu.teammatching.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;  // Add this
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile; // Import cho MultipartFile
 import ut.edu.teammatching.dto.AssignRoleRequest;
 import ut.edu.teammatching.dto.CreateTeamDTO;
 import ut.edu.teammatching.models.Student;
@@ -13,6 +14,8 @@ import ut.edu.teammatching.models.User;
 import ut.edu.teammatching.repositories.UserRepository;
 import ut.edu.teammatching.services.TeamService;
 
+import java.io.File; // Import cho File
+import java.io.IOException; // Import cho IOException
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +45,30 @@ public class TeamController {
                     request.getDescription(),
                     request.getTeamType(),
                     request.getTeamPicture(),
-                    authentication // Truyền thêm authentication vào đây
+                    authentication
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+    }
+
+    // Endpoint upload ảnh
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file, Authentication authentication) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+        }
+
+        try {
+            String uploadDir = "teammatching/src/main/resources/static/imagespost/";
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            File destination = new File(uploadDir + fileName);
+            file.transferTo(destination);
+            String fileUrl = "/imagespost/" + fileName;
+            return ResponseEntity.ok(fileUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file: " + e.getMessage());
         }
     }
 
@@ -74,13 +96,11 @@ public class TeamController {
         }
     }
 
-    //Đặt một sinh viên làm leader của team.
     @PutMapping("/{id}/leader/{studentId}")
     public ResponseEntity<Team> setLeader(@PathVariable Long id, @PathVariable Long studentId) {
         return ResponseEntity.ok(teamService.setLeader(id, studentId));
     }
 
-    //Xóa một sinh viên khỏi team.
     @DeleteMapping("/{id}/remove-student/{studentId}")
     public ResponseEntity<Void> removeStudent(@PathVariable Long id, @PathVariable Long studentId) {
         teamService.removeStudent(id, studentId);
@@ -112,7 +132,6 @@ public class TeamController {
         }
     }
 
-    //Thêm giảng viên hướng dẫn
     @PostMapping("/{teamId}/assign-lecturer")
     public ResponseEntity<Team> assignLecturer(@RequestParam Long leaderId,
                                                @PathVariable Long teamId,
@@ -121,7 +140,6 @@ public class TeamController {
         return ResponseEntity.ok(team);
     }
 
-    //Phân công vai trò
     @PostMapping("/{teamId}/assign-role")
     public ResponseEntity<?> assignRole(@RequestBody AssignRoleRequest request) {
         Team updatedTeam = teamService.assignRole(request.getLeaderId(), request.getTeamId(), request.getMemberId(), request.getRole());
