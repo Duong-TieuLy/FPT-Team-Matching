@@ -25,7 +25,7 @@ const EditProfileModal = ({ onClose, user }) => {
     console.log("Form Data:", formData);
     onClose();
   };
-
+//** */
   return (
     <AnimatePresence>
       <motion.div
@@ -54,84 +54,165 @@ const EditProfileModal = ({ onClose, user }) => {
             <X className="w-7 h-7 cursor-pointer" />
           </motion.button>
 
-          <div className="w-full p-8 backdrop-blur-lg">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-900">
-              Personal Information
-            </h2>
-            <div className="flex justify-center mb-4">
-              <div className="relative">
-                <img
-                  src="/avata.jpg"
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full object-cover"
-                />
-                <button className="absolute bottom-0 right-0 bg-blue-500 p-1 rounded-full text-white">
-                  ✎
-                </button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {["Fullname", "city", "hoc ki", "address"].map((field) => (
-                <input
-                  key={field}
-                  name={field}
-                  value={formData[field]}
-                  onChange={handleChange}
-                  placeholder={field.replace(/([A-Z])/g, " $1")}
-                  className="border p-2 rounded-md w-full text-gray-600"
-                />
-              ))}
-              <select
-                name="maritalStatus"
-                value={formData.maritalStatus}
-                onChange={handleChange}
-                className="border p-2 rounded-md w-full text-gray-600"
-              >
-                <option>Teacher</option>
-                <option>Student</option>
-              </select>
-              <div className="flex gap-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="Male"
-                    checked={formData.gender === "Male"}
-                    onChange={handleChange}
-                  />
-                  <span className="ml-2">Male</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="Female"
-                    checked={formData.gender === "Female"}
-                    onChange={handleChange}
-                  />
-                  <span className="ml-2">Female</span>
-                </label>
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={onClose}
-                className="bg-red-500 text-white px-4 py-2 rounded-md cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer   "
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+      <div className="w-full p-8 backdrop-blur-lg">
+                  <h2 className="text-2xl font-semibold mb-6 text-gray-900">
+                    Personal Information
+                  </h2>
+                  <div className="flex justify-center mb-4">
+                    <div className="relative">
+                      <img
+                        src="/avata.jpg"
+                        alt="Profile"
+                        className="w-32 h-32 rounded-full object-cover"
+                      />
+                      <button className="absolute bottom-0 right-0 bg-blue-500 p-1 rounded-full text-white">
+                        ✎
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* First Name */}
+                    <input
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="First Name"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Last Name */}
+                    <input
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Last Name"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Username */}
+                    <input
+                      name="userName"
+                      value={formData.userName}
+                      onChange={handleChange}
+                      placeholder="Username"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* City */}
+                    <input
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      placeholder="City"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Date of Birth */}
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      value={formData.dateOfBirth}
+                      onChange={handleChange}
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Age */}
+                    <input
+                      type="number"
+                      name="age"
+                      value={formData.age}
+                      onChange={handleChange}
+                      placeholder="Age"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Country */}
+                    <select
+                      name="country"
+                      value={formData.country}
+                      onChange={handleChange}
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    >
+                      <option value="USA">USA</option>
+                      <option value="Vietnam">Vietnam</option>
+                      <option value="UK">UK</option>
+                      <option value="Canada">Canada</option>
+                    </select>
+                    {/* State */}
+                    <input
+                      name="state"
+                      value={formData.state}
+                      onChange={handleChange}
+                      placeholder="State"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Address */}
+                    <input
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      placeholder="Address"
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    />
+                    {/* Marital Status */}
+                    <select
+                      name="maritalStatus"
+                      value={formData.maritalStatus}
+                      onChange={handleChange}
+                      className="border p-2 rounded-md w-full text-gray-600"
+                    >
+                      <option value="Single">Single</option>
+                      <option value="Married">Married</option>
+                      <option value="Divorced">Divorced</option>
+                      <option value="Widowed">Widowed</option>
+                    </select>
+                    {/* Gender */}
+                    <div className="flex gap-4">
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Male"
+                          checked={formData.gender === "Male"}
+                          onChange={handleChange}
+                        />
+                        <span className="ml-2">Male</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Female"
+                          checked={formData.gender === "Female"}
+                          onChange={handleChange}
+                        />
+                        <span className="ml-2">Female</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          name="gender"
+                          value="Other"
+                          checked={formData.gender === "Other"}
+                          onChange={handleChange}
+                        />
+                        <span className="ml-2">Other</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 mt-4">
+                    <button
+                      onClick={onClose}
+                      className="bg-red-500 text-white px-4 py-2 rounded-md cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSubmit}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        );
+      };
 
-export default EditProfileModal;
+      export default EditProfileModal;
