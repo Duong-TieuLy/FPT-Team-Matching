@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FPT-Team-Matching.iml" filepath="$PROJECT_DIR$/.idea/FPT-Team-Matching.iml" />
-      <module fileurl="file://$PROJECT_DIR$/teammatching/teammatching.iml" filepath="$PROJECT_DIR$/teammatching/teammatching.iml" />
     </modules>
   </component>
 </project>

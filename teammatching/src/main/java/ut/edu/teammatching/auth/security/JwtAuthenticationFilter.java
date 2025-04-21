@@ -1,5 +1,6 @@
 package ut.edu.teammatching.auth.security;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.core.Authentication;
@@ -10,14 +11,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+//    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -26,27 +32,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         System.out.println("🔍 Checking Authorization Header: " + authHeader);
 
-        // Kiểm tra xem có header Authorization hay không
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);  // Cắt bỏ "Bearer "
+        String token = authHeader.substring(7);
         System.out.println("🔑 Extracted Token: " + token);
 
         try {
-            if (jwtUtil.validateToken(token)) {
-                Authentication authentication = jwtUtil.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (jwtTokenProvider.validateToken(token)) {
+                String username = jwtTokenProvider.getUserIdFromToken(token); // ✅ Sửa ở đây
+                System.out.println("✅ User authenticated: " + username);
+                var userDetails = userDetailsService.loadUserByUsername(username);
+                System.out.println("🐞 Username from token: " + username);
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                System.out.println("✅ Token is valid. User authenticated: " + authentication.getName());
-                System.out.println("✅ User roles: " + authentication.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
             }
         } catch (Exception e) {
-            System.err.println("❌ Lỗi xác thực token: " + e.getMessage());
+            System.err.println("❌ Token validation failed: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

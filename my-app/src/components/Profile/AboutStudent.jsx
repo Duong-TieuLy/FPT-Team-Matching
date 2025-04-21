@@ -9,8 +9,10 @@ import {
   School,
   HopOffIcon,
 } from "lucide-react";
+import { useAuth } from "../../context/useAuth";
 
 const AboutStudent = () => {
+  const { user } = useAuth(); // Lấy user từ context
   return (
     <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-20    ">
       {/* Contact Information */}
@@ -22,27 +24,28 @@ const AboutStudent = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
           <p className="text-gray-600 flex items-center gap-2">
             <Mail className="w-4 h-4 text-gray-500" />
-            <strong>Email:</strong> Bnijohn@gmail.com
+            <strong>Email:</strong> {user.email}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <Phone className="w-4 h-4 text-gray-500" />
-            <strong>Mobile:</strong> (001) 4544 565 456
+            <strong>Mobile:</strong> {user.phoneNumber}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-gray-500" />
-            <strong>Address:</strong> United States of America
+            <strong>Gender:</strong> {user.gender}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <ProjectorIcon className="w-4 h-4 text-gray-500" />
-            <strong>Project:</strong> United , Eden , Tiểu lí phi dao
+            <strong>Project:</strong>{" "}
+            {user.projects == [] || "Không có project"}
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <School className="w-4 h-4 text-gray-500" />
-            <strong>School:</strong> UTH
+            <strong>Role</strong> Student
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <HopOffIcon className="w-4 h-4 text-gray-500" />
-            <strong>Hoppy:</strong> United States of America
+            <strong>Skill : </strong> {user.skill == [] || "Không có kĩ năng"}
           </p>
         </div>
       </div>
@@ -89,14 +92,14 @@ const AboutStudent = () => {
             <strong>Birth Year:</strong> 1994
           </p>
           <p className="text-gray-600">
-            <strong>Gender:</strong> Female
+            <strong>Adress:</strong> TP HCM
           </p>
           <p className="text-gray-600">
             <strong>Interested in:</strong> Designing
           </p>
           <p className="text-gray-600 flex items-center gap-2">
             <Languages className="w-4 h-4 text-gray-500" />
-            <strong>Language:</strong> English, French
+            <strong>Language:</strong> English
           </p>
         </div>
       </div>

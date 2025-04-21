@@ -46,7 +46,7 @@ public class AuthController {
         }
 
         // ✅ Tạo JWT token
-        String token = jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(user);
 
         UserDTO userDTO = UserService.convertToDTO(user);
         // ✅ Trả về JSON chứa token + user info
