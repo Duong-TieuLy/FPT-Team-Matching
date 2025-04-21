@@ -8,6 +8,10 @@ const EditUser = ({ userId, onClose }) => {
         fullName: '',
         email: '',
         profilePicture: '',
+        gender: '',
+        phoneNumber: '',
+        hobbies: [],
+        projects: [],
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -21,10 +25,15 @@ const EditUser = ({ userId, onClose }) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                // Cập nhật userData với dữ liệu từ API
                 setUserData({
-                    fullName: response.data.fullName,
-                    email: response.data.email,
-                    profilePicture: response.data.profilePicture,
+                    fullName: response.data.fullName || '',
+                    email: response.data.email || '',
+                    profilePicture: response.data.profilePicture || '',
+                    gender: response.data.gender || '',
+                    phoneNumber: response.data.phoneNumber || '',
+                    hobbies: response.data.hobbies || [],
+                    projects: response.data.projects || [],
                 });
             } catch (err) {
                 setError('Không thể lấy thông tin user');
@@ -40,6 +49,12 @@ const EditUser = ({ userId, onClose }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUserData({ ...userData, [name]: value });
+    };
+
+    // Xử lý thay đổi cho các trường mảng (hobbies, projects)
+    const handleArrayChange = (e, field) => {
+        const value = e.target.value.split(',').map((item) => item.trim()).filter(item => item); // Loại bỏ phần tử rỗng
+        setUserData((prev) => ({ ...prev, [field]: value }));
     };
 
     // Gửi yêu cầu cập nhật user
@@ -97,6 +112,48 @@ const EditUser = ({ userId, onClose }) => {
                             name="profilePicture"
                             value={userData.profilePicture}
                             onChange={handleChange}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Giới tính</label>
+                        <select
+                            name="gender"
+                            value={userData.gender}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded"
+                        >
+                            <option value="">-- Chọn --</option>
+                            <option value="MALE">Nam</option>
+                            <option value="FEMALE">Nữ</option>
+                            <option value="OTHER">Khác</option>
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Số điện thoại</label>
+                        <input
+                            type="text"
+                            name="phoneNumber"
+                            value={userData.phoneNumber}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Sở thích (cách nhau bằng dấu phẩy)</label>
+                        <input
+                            type="text"
+                            value={userData.hobbies.join(', ')}
+                            onChange={(e) => handleArrayChange(e, 'hobbies')}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Dự án (cách nhau bằng dấu phẩy)</label>
+                        <input
+                            type="text"
+                            value={userData.projects.join(', ')}
+                            onChange={(e) => handleArrayChange(e, 'projects')}
                             className="w-full p-2 border rounded"
                         />
                     </div>
