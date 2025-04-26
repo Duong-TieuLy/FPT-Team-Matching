@@ -19,7 +19,7 @@ const MailDropdown = ({ showMails, setShowMails }) => {
                     return;
                 }
 
-                const res = await axios.get(`/api/lecturer-join-requests/pending/${lecturerId}`, {
+                const res = await axios.get(`http://localhost:8080/api/lecturer-join-requests/pending/${lecturerId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -67,7 +67,7 @@ const MailDropdown = ({ showMails, setShowMails }) => {
             });
 
             const response = await axios.post(
-                `/api/lecturer-join-requests/respond?${params.toString()}`,
+                `http://localhost:8080/api/lecturer-join-requests/respond?${params.toString()}`,
                 {},
                 {
                     headers: {

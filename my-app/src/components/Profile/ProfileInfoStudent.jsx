@@ -40,7 +40,7 @@ const ProfileStudent = ({ userId }) => {
   useEffect(() => {
     if (idToUse) {
       axios
-        .get(`/api/users/dto/${idToUse}`, {
+        .get(`http://localhost:8080/api/users/dto/${idToUse}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -59,7 +59,7 @@ const ProfileStudent = ({ userId }) => {
   useEffect(() => {
     if (userId && user?.id) {
       axios
-        .get(`/api/friends/check/${user?.id}/${userId}`, {
+        .get(`http://localhost:8080/api/friends/check/${user?.id}/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -79,7 +79,7 @@ const ProfileStudent = ({ userId }) => {
 
     try {
       await axios.post(
-        `/api/friends/request/${user?.id}/${userId}`,
+        `http://localhost:8080/api/friends/request/${user?.id}/${userId}`,
         {},
         {
           headers: {

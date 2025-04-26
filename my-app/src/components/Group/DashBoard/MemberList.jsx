@@ -23,7 +23,7 @@ const MemberList = () => {
         const fetchMembers = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get(`/api/teams/${teamId}/members`, {
+                const res = await axios.get(`http://localhost:8080/api/teams/${teamId}/members`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -39,7 +39,7 @@ const MemberList = () => {
                 setIsLeader(current?.type === "LEADER");
                 setIsLecturer(current?.type === "LECTURER");
 
-                const teamRes = await axios.get(`/api/teams/${teamId}`, {
+                const teamRes = await axios.get(`http://localhost:8080/api/teams/${teamId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -64,7 +64,7 @@ const MemberList = () => {
             setDeletingId(studentIdToRemove);
             const token = localStorage.getItem("token");
 
-            await axios.delete(`/api/teams/${teamId}/remove-student`, {
+            await axios.delete(`http://localhost:8080/api/teams/${teamId}/remove-student`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

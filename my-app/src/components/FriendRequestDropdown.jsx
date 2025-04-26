@@ -19,7 +19,7 @@ const FriendRequestDropdown = ({ showFriends, setShowFriends }) => {
           return;
         }
 
-        const res = await axios.get(`/api/friends/pending/${userId}`, {
+        const res = await axios.get(`http://localhost:8080/api/friends/pending/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -50,7 +50,7 @@ const FriendRequestDropdown = ({ showFriends, setShowFriends }) => {
   const handleConfirm = async (requestId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`/api/friends/${requestId}/respond?accept=true`, null, {
+      await axios.post(`http://localhost:8080/api/friends/${requestId}/respond?accept=true`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +66,7 @@ const FriendRequestDropdown = ({ showFriends, setShowFriends }) => {
   const handleDelete = async (requestId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`/api/friends/${requestId}/respond?accept=false`, null, {
+      await axios.post(`http://localhost:8080/api/friends/${requestId}/respond?accept=false`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

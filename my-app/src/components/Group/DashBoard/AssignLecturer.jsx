@@ -23,7 +23,7 @@ function AssignLecturer({ teamId, onClose }) {
             setLoading(true);
 
             axios
-                .get(`/api/search/lecturer?keyword=${encodeURIComponent(searchQuery)}&currentUserId=${currentUserId}`, {
+                .get(`http://localhost:8080/api/search/lecturer?keyword=${encodeURIComponent(searchQuery)}&currentUserId=${currentUserId}`, {
                     cancelToken: cancelToken.token,
                 })
                 .then((res) => {
@@ -62,7 +62,7 @@ function AssignLecturer({ teamId, onClose }) {
             const token = localStorage.getItem("token");
             const requesterId = localStorage.getItem("userId");
 
-            const res = await axios.post(`/api/lecturer-join-requests`, null, {
+            const res = await axios.post(`http://localhost:8080/api/lecturer-join-requests`, null, {
                 headers: { Authorization: `Bearer ${token}` },
                 params: { teamId, lecturerId, requesterId },
             });

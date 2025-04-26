@@ -19,7 +19,7 @@ function SearchBar() {
                 setLoading(true);
 
                 axios
-                    .get(`/api/search?keyword=${encodeURIComponent(search)}&currentUserId=${userId}`, {
+                    .get(`http://localhost:8080/api/search?keyword=${encodeURIComponent(search)}&currentUserId=${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },

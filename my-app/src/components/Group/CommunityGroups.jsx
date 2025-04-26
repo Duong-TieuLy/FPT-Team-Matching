@@ -10,14 +10,14 @@ const CommunityGroups = () => {
     const fetchCommunityGroups = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("/api/teams/community-available", {
+        const response = await axios.get("http://localhost:8080/api/teams/community-available", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const groupsWithMemberCount = await Promise.all(response.data.map(async (group) => {
           // Lấy số lượng thành viên cho từng nhóm
-          const memberCountResponse = await axios.get(`/api/teams/${group.id}/members/count`, {
+          const memberCountResponse = await axios.get(`http://localhost:8080/api/teams/${group.id}/members/count`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -44,7 +44,7 @@ const CommunityGroups = () => {
     }
 
     axios
-        .post(`/api/teams/teams/${groupId}/join?studentId=${studentId}`, {}, {
+        .post(`http://localhost:8080/api/teams/teams/${groupId}/join?studentId=${studentId}`, {}, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

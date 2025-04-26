@@ -8,12 +8,10 @@ export default defineConfig({
     global: 'globalThis',
   },
   server: {
-    port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // địa chỉ backend Spring Boot
-        changeOrigin: true, // cần thiết để xử lý cross-origin
-        // KHÔNG cần rewrite nếu Spring Boot dùng @RequestMapping("/api")
+        target: 'http://localhost:8080', // Địa chỉ backend Spring Boot
+        changeOrigin: true, // Cần thiết để xử lý cross-origin
       }
     }
   }

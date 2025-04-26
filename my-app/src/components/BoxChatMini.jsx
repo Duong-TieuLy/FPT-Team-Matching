@@ -14,14 +14,14 @@ export default function BoxChatMini({ user, currentUser, onClose }) {
         // Nhận tin nhắn mới qua WebSocket và cập nhật lại giao diện
         setMessages((prev) => [...prev, msg]);
       },
-      `/user/${currentUser.id}/queue/messages`  // Từ Spring: @SendToUser
+      `http://localhost:8080/user/${currentUser.id}/queue/messages`  // Từ Spring: @SendToUser
   );
 
   // Load lịch sử tin nhắn khi người dùng vào chat
   useEffect(() => {
     const loadMessages = async () => {
       try {
-        const response = await fetch(`/api/messages/private?user1=${currentUser.id}&user2=${user.id}`);
+        const response = await fetch(`http://localhost:8080/api/messages/private?user1=${currentUser.id}&user2=${user.id}`);
         const data = await response.json();
         console.log(data);
         setMessages(data); // Lưu tin nhắn vào state
@@ -52,7 +52,7 @@ export default function BoxChatMini({ user, currentUser, onClose }) {
     };
 
     // Gửi tin nhắn qua WebSocket
-    sendMessage("/app/chat.private", msg);
+    sendMessage("http://localhost:8080/app/chat.private", msg);
 
     // Cập nhật state với tin nhắn gửi đi
     setMessages((prev) => [...prev, msg]);

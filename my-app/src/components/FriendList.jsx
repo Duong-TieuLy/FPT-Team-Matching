@@ -23,7 +23,7 @@ const FriendsList = ({ userId: propUserId }) => {
       if (!token) return;
 
       try {
-        const response = await axios.get(`/api/friends/list/${targetUserId}`, {
+        const response = await axios.get(`http://localhost:8080/api/friends/list/${targetUserId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -55,7 +55,7 @@ const FriendsList = ({ userId: propUserId }) => {
     if (!token) return;
 
     try {
-      await axios.delete(`/api/friends/${friendId}`, {
+      await axios.delete(`http://localhost:8080/api/friends/${friendId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFriends((prev) => prev.filter((f) => f.id !== friendId));
@@ -70,7 +70,7 @@ const FriendsList = ({ userId: propUserId }) => {
 
     try {
       await axios.post(
-          `/api/friends/request/${currentUser.id}/${targetUserId}`,
+          `http://localhost:8080/api/friends/request/${currentUser.id}/${targetUserId}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
       );

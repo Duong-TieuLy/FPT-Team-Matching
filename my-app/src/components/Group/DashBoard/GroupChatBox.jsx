@@ -19,7 +19,7 @@ const GroupChatBox = () => {
 
     const { sendMessage } = useWebSocket(
         handleNewMessage,
-        `/topic/team.${teamId}` // Kênh WebSocket để lắng nghe tin nhắn mới
+        `http://localhost:8080/topic/team.${teamId}` // Kênh WebSocket để lắng nghe tin nhắn mới
     );
 
     // Hàm gửi tin nhắn
@@ -34,7 +34,7 @@ const GroupChatBox = () => {
                 messageType: "TEAM",
             };
 
-            sendMessage(`/app/chat.team.${teamId}`, messagePayload); // Gửi tin nhắn qua WebSocket
+            sendMessage(`http://localhost:8080/app/chat.team.${teamId}`, messagePayload); // Gửi tin nhắn qua WebSocket
             setInput(""); // Xóa ô nhập tin nhắn sau khi gửi
         }
     };
@@ -43,7 +43,7 @@ const GroupChatBox = () => {
     const loadMessages = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/messages/team/${teamId}`, {
+            const response = await fetch(`http://localhost:8080/api/messages/team/${teamId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

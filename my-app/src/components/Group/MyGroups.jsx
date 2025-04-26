@@ -19,7 +19,7 @@ const MyGroups = () => {
       }
 
       try {
-        const response = await fetch(`/api/teams/user/${user.username}`, {
+        const response = await fetch(`http://localhost:8080/api/teams/user/${user.username}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -28,7 +28,7 @@ const MyGroups = () => {
         const data = await response.json();
         // Lấy số lượng thành viên cho từng nhóm
         for (let group of data) {
-          const countResponse = await fetch(`/api/teams/${group.id}/members/count`, {
+          const countResponse = await fetch(`http://localhost:8080/api/teams/${group.id}/members/count`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

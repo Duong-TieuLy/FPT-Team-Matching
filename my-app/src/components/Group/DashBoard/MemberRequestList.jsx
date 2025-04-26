@@ -11,7 +11,7 @@ const MemberRequestList = () => {
         const fetchJoinRequests = async () => {
             const token = localStorage.getItem("token");
             try {
-                const response = await fetch(`/api/teams/${teamId}/join-requests`, {
+                const response = await fetch(`http://localhost:8080/api/teams/${teamId}/join-requests`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -35,7 +35,7 @@ const MemberRequestList = () => {
         const token = localStorage.getItem("token");
         try {
             const response = await fetch(
-                `/api/teams/${teamId}/join-requests/${request.id}/handle?accept=${accept}`,
+                `http://localhost:8080/api/teams/${teamId}/join-requests/${request.id}/handle?accept=${accept}`,
                 {
                     method: "POST",
                     headers: {

@@ -23,7 +23,7 @@ function AddMember({ teamId, onClose }) {
             setLoading(true);
 
             axios
-                .get(`/api/search/student?keyword=${encodeURIComponent(searchQuery)}&currentUserId=${currentUserId}`, {
+                .get(`http://localhost:8080/api/search/student?keyword=${encodeURIComponent(searchQuery)}&currentUserId=${currentUserId}`, {
                     cancelToken: cancelToken.token,
                 })
                 .then((res) => {
@@ -61,7 +61,7 @@ function AddMember({ teamId, onClose }) {
             setAddingId(studentId);
             const token = localStorage.getItem("token");
 
-            const res = await axios.post(`/api/teams/${teamId}/add-student`, null, {
+            const res = await axios.post(`http://localhost:8080/api/teams/${teamId}/add-student`, null, {
                 headers: { Authorization: `Bearer ${token}` },
                 params: { studentIdToAdd: studentId },
             });

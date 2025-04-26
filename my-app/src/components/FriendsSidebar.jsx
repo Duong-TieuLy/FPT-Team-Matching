@@ -17,7 +17,7 @@ export default function FriendsSidebar({ isOpen, toggleSidebar }) {
       if (!currentUser?.id) return;
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`/api/friends/list/${currentUser.id}`, {
+        const res = await axios.get(`http://localhost:8080/api/friends/list/${currentUser.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
