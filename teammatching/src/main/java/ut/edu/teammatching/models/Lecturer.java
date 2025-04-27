@@ -1,6 +1,7 @@
 package ut.edu.teammatching.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class Lecturer extends User {
     private List<Rating> receivedRatings = new ArrayList<>();
 
     @OneToMany(mappedBy = "givenByLecturer", cascade = CascadeType.ALL, orphanRemoval = true)
+
     private List<Rating> givenRatings = new ArrayList<>();
 
     // ✅ Constructor đầy đủ thông tin

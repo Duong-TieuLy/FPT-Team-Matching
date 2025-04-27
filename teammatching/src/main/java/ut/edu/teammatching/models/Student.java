@@ -43,9 +43,11 @@ public class Student extends User {
     private List<Task> assignedTasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "ratedStudent", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference("ratedStudentReference") // Đổi tên
     private List<Rating> receivedRatings = new ArrayList<>();
 
     @OneToMany(mappedBy = "givenByStudent", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference("givenByStudentReference") // Đổi tên
     private List<Rating> givenRatings = new ArrayList<>();
 
     @OneToMany(mappedBy = "leader", cascade = CascadeType.ALL, orphanRemoval = true)

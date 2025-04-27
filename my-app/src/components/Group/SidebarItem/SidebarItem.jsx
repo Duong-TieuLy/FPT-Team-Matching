@@ -1,3 +1,4 @@
+import { useAuth } from "../../../context/useAuth.jsx";
 const SidebarItem = ({ icon, label, badge, onClick }) => (
   <li
     onClick={onClick}
