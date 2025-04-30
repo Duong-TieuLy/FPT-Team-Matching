@@ -3,7 +3,7 @@ import axios from "axios";
 import SidebarItem from "./SidebarItem";
 import { useAuth } from "../../../context/useAuth.jsx";
 
-const OtherSection = ({ onMemberClick, onRequestClick, onRatingClick }) => {
+const OtherSection = ({ onMemberClick, onRequestClick, onRatingClick, onTaskClick, onChangeLeaderClick, onOutGroupClick }) => {
   const [teamRes, setTeamRes] = useState(null); // Để lưu thông tin nhóm
   const [isRatingAllowed, setIsRatingAllowed] = useState(false); // Kiểm tra xem người dùng có thể mở form Rating hay không
   const { user } = useAuth();
@@ -60,18 +60,21 @@ const OtherSection = ({ onMemberClick, onRequestClick, onRatingClick }) => {
           onClick={onRatingClick}
         />
       )}
-      <SidebarItem
-        label="Files"
-        icon={<span className="text-red-500">●</span>}
-        badge="10"
-      />
+        <SidebarItem
+            label="Task"
+            icon={<span className="text-purple-500">●</span>}
+            onClick={onTaskClick}
+        />
+
       <SidebarItem
         label="Transfer leader"
         icon={<span className="text-blue-500">●</span>}
+        onClick={onChangeLeaderClick}
       />
       <SidebarItem
         label="Out group"
         icon={<span className="text-black-500">●</span>}
+        onClick={onOutGroupClick}
       />
     </div>
   );

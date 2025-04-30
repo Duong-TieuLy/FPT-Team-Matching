@@ -72,11 +72,14 @@ const CommunityGroups = () => {
                     className="w-24 h-24 mx-auto rounded-full object-cover mb-4"
                 />
                 <h2 className="text-lg font-semibold text-blue-600">{group.teamName}</h2>
+                <p className="text-xs text-gray-400 mb-1">
+                  {group.teamType ? (group.teamType === "ACADEMIC" ? "ACADEMIC" : "NON_ACADEMIC") : ""}
+                </p>
                 <p className="text-gray-500 text-sm">{group.description}</p>
                 <div className="flex justify-around text-sm text-gray-700 mt-4">
-                  <span>Thành viên: {group.memberCount || 0}</span>
+                  <span>Member: {group.memberCount || 0}</span>
                 </div>
-                {isPending && <p className="text-yellow-500 text-sm">Chờ leader xử lý</p>}
+                {isPending && <p className="text-yellow-500 text-sm">Waiting for leader</p>}
                 <button
                     className={`mt-4 py-2 px-4 rounded-full cursor-pointer ${
                         isJoined
@@ -93,10 +96,10 @@ const CommunityGroups = () => {
                     disabled={isPending}
                 >
                   {isJoined
-                      ? "Đã gia nhập"
+                      ? "Joined"
                       : isPending
-                          ? "Chờ leader xử lý"
-                          : "Xin vào nhóm"}
+                          ? "Waiting for leader"
+                          : "Request to join"}
                 </button>
               </div>
           );
@@ -106,7 +109,7 @@ const CommunityGroups = () => {
 
   return (
       <div>
-        <h2 className="text-2xl font-bold mb-4 text-center">Nhóm cộng đồng</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Community Group</h2>
         {renderGroupList(communityGroups)}
       </div>
   );

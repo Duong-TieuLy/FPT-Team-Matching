@@ -43,7 +43,7 @@ const Group = () => {
           }`}
           onClick={() => handleTabChange("my")}
         >
-          Nhóm của tôi
+          My Group
         </button>
         <button
           className={`px-6 py-2 cursor-pointer ${
@@ -51,7 +51,7 @@ const Group = () => {
           }`}
           onClick={() => handleTabChange("community")}
         >
-          Nhóm cộng đồng
+          Community Group
         </button>
       </div>
 

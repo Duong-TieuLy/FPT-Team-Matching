@@ -13,10 +13,9 @@ const MemberList = () => {
   const [isLeader, setIsLeader] = useState(false);
   const [isLecturer, setIsLecturer] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState(null); // Để xử lý loading khi xoá
+  const [deletingId, setDeletingId] = useState(null);
   const [showAddMember, setShowAddMember] = useState(false);
   const [showAssignLecturer, setShowAssignLecturer] = useState(false);
-  //   const GroupContext = createContext();
 
   const currentUserId = parseInt(localStorage.getItem("userId"));
 
@@ -53,7 +52,6 @@ const MemberList = () => {
             },
           }
         );
-        console.log("Team Res: ", teamRes.data);
 
         setTeamType(teamRes.data?.teamType || "");
       } catch (error) {
@@ -131,8 +129,7 @@ const MemberList = () => {
 
           const canRemove =
             (isLeader || isLecturer) && !isBothLeaderAndLecturer;
-          console.log(members);
-          console.log(member.profilePicture);
+
           return (
             <motion.li
               key={member.id}
@@ -142,61 +139,53 @@ const MemberList = () => {
               className="flex items-center justify-between p-2 rounded-md hover:bg-gray-100"
             >
               <div className="flex items-center gap-2">
-                <img
-                  src={member.memberPicture}
-                  alt="Avatar"
-                  className="w-8 h-8 rounded-full"
-                />
+                {member.profilePicture ? (
+                  <img
+                    src={member.profilePicture}
+                    alt="Avatar"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                    {member.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
-                  <span className="font-medium">{member.fullName}</span>
-                  <div className="text-sm text-gray-500">{member.type}</div>
+                  <p className="font-medium">{member.name}</p>
+                  <p className="text-sm text-gray-500">{member.type}</p>
                 </div>
               </div>
               {canRemove && (
                 <button
+                  className="text-red-500 hover:text-red-700 disabled:opacity-50"
                   onClick={() => handleDeleteMember(member.id)}
                   disabled={deletingId === member.id}
-                  className={`text-red-500 hover:text-red-700 ${
-                    deletingId === member.id
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
                 >
-                  {deletingId === member.id ? "Removing..." : "Remove"}
+                  {deletingId === member.id ? "Đang xoá..." : "Xoá"}
                 </button>
               )}
             </motion.li>
           );
         })}
       </ul>
-      {/* ✅ Hiển thị component AddMember khi cần */}
+
       {showAddMember && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-transparent flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
-            <AddMember
-              teamId={teamId}
-              onClose={() => setShowAddMember(false)}
-              onAddSuccess={(newMember) => {
-                setMembers((prev) => [...prev, newMember]);
-              }}
-            />
-          </div>
-        </div>
+        <AddMember
+          teamId={teamId}
+          onClose={() => setShowAddMember(false)}
+          onMemberAdded={(newMember) => setMembers((prev) => [...prev, newMember])}
+        />
       )}
 
       {showAssignLecturer && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-transparent flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-md">
-            <AssignLecturer
-              teamId={teamId}
-              onClose={() => setShowAssignLecturer(false)}
-              onAssignSuccess={(newLecturer) => {
-                setMembers((prev) => [...prev, newLecturer]);
-                setHasLecturer(true);
-              }}
-            />
-          </div>
-        </div>
+        <AssignLecturer
+          teamId={teamId}
+          onClose={() => setShowAssignLecturer(false)}
+          onLecturerAssigned={(lecturer) => {
+            setHasLecturer(true);
+            setMembers((prev) => [...prev, lecturer]);
+          }}
+        />
       )}
     </div>
   );

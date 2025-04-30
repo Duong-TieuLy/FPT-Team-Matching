@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile; // Import cho MultipartFile
 import ut.edu.teammatching.dto.*;
@@ -11,8 +12,7 @@ import ut.edu.teammatching.dto.team.CreateTeamDTO;
 import ut.edu.teammatching.dto.team.JoinRequestResponse;
 import ut.edu.teammatching.dto.team.TeamDTO;
 import ut.edu.teammatching.dto.team.TeamMemberDTO;
-import ut.edu.teammatching.enums.JoinRequestStatus;
-import ut.edu.teammatching.models.Student;
+import ut.edu.teammatching.exceptions.AccessDeniedException;
 import ut.edu.teammatching.models.Team;
 import ut.edu.teammatching.models.User;
 import ut.edu.teammatching.repositories.TeamRepository;
@@ -43,19 +43,28 @@ public class TeamController {
      * ✅ Endpoint cho leader chấp nhận hoặc từ chối yêu cầu tham gia nhóm
      */
     @PostMapping("/{teamId}/join-requests/{studentId}/handle")
-    public ResponseEntity<String> handleJoinRequest(
+    public ResponseEntity<?> handleStudentJoinRequest(
             @PathVariable Long teamId,
             @PathVariable Long studentId,
             @RequestParam boolean accept,
             Authentication authentication
     ) {
-        String leaderUsername = authentication.getName(); // lấy từ JWT token
+        String username = authentication.getName(); // Lấy username từ JWT token
+
+        // Kiểm tra nếu user hợp lệ
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Người dùng không hợp lệ");
+        }
+
+        Long userId = userOpt.get().getId();  // Lấy userId từ User object
 
         try {
-            teamService.handleJoinRequest(teamId, studentId, accept, leaderUsername);
-            return ResponseEntity.ok(accept ? "Đã chấp nhận yêu cầu" : "Đã từ chối yêu cầu");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            teamService.handleJoinRequest(teamId, studentId, accept, userId);
+            String message = accept ? "Đã chấp nhận yêu cầu gia nhập nhóm." : "Đã từ chối yêu cầu gia nhập nhóm.";
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
@@ -122,21 +131,28 @@ public class TeamController {
         return ResponseEntity.ok("Team deleted successfully");
     }
 
-    @PostMapping("/{teamId}/leave")
+    @DeleteMapping("/{teamId}/leave")
     public ResponseEntity<String> leaveTeam(@PathVariable Long teamId, @RequestParam Long userId) {
         try {
             teamService.leaveTeam(teamId, userId);
             return ResponseEntity.ok("User has left the team successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to leave team.");
         }
     }
 
-    @PutMapping("/{id}/leader/{studentId}")
-    public ResponseEntity<Team> setLeader(@PathVariable Long id, @PathVariable Long studentId) {
-        return ResponseEntity.ok(teamService.setLeader(id, studentId));
+    @PutMapping("/{teamId}/change-leader")
+    public ResponseEntity<String> changeLeader(
+            @PathVariable Long teamId,
+            @RequestParam Long currentUserId,
+            @RequestParam Long newLeaderId) {
+
+        teamService.changeLeader(teamId, currentUserId, newLeaderId);
+        return ResponseEntity.ok("Đã đổi leader thành công.");
     }
 
     @DeleteMapping("/{teamId}/remove-student")
@@ -205,25 +221,13 @@ public class TeamController {
 
     // Lấy danh sách sinh viên đã gửi yêu cầu vào nhóm
     @GetMapping("/{teamId}/join-requests")
-    public ResponseEntity<List<Student>> getJoinRequests(@PathVariable Long teamId) {
-        // Lấy thông tin nhóm từ teamId
-        Team team = teamService.getTeamById(teamId);
-
-        // Kiểm tra xem nhóm có tồn tại không
-        if (team == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<List<TeamMemberDTO>> getJoinRequests(@PathVariable Long teamId) {
+        try {
+            List<TeamMemberDTO> joinRequests = teamService.getJoinRequests(teamId);
+            return ResponseEntity.ok(joinRequests);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Trả về lỗi nếu không tìm thấy nhóm
         }
-
-        // Lấy danh sách sinh viên có yêu cầu gia nhập nhóm
-        Map<Student, JoinRequestStatus> joinRequests = team.getJoinRequests();
-
-        // Chuyển đổi Map thành danh sách sinh viên
-        List<Student> studentsWithRequests = joinRequests.entrySet().stream()
-                .filter(entry -> entry.getValue() == JoinRequestStatus.PENDING) // Chỉ lấy các yêu cầu đang chờ
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(studentsWithRequests);
     }
 
     @GetMapping("/{teamId}/members")
@@ -249,5 +253,14 @@ public class TeamController {
             // Nếu không tìm thấy team, trả về lỗi 404
             return ResponseEntity.status(404).body(null);
         }
+    }
+
+    @GetMapping("/{teamId}/members/task")
+    public ResponseEntity<List<TeamMemberDTO>> getMembersExcludingLeaderAndLecturer(@PathVariable Long teamId) {
+        Team team = teamService.getTeamById(teamId); // 🔥 Lấy team từ service
+
+        List<TeamMemberDTO> members = teamService.getMembersTask(team);
+
+        return ResponseEntity.ok(members);
     }
 }

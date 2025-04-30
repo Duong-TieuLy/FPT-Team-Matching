@@ -13,7 +13,7 @@ import java.util.*;
 @Getter
 @Setter
 @Entity
-@Table(name="teams")
+@Table(name = "teams")
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public class Team {
     private String teamPicture; // Lưu đường dẫn ảnh đại diện
 
     @Lob
-    private String  description;
+    private String description;
 
     //Lưu người tạo team
     @ManyToOne(fetch = FetchType.LAZY)
@@ -83,7 +83,9 @@ public class Team {
         this.leader = newLeader;
     }
 
-    /** 🔥 Kiểm tra ràng buộc: Nếu team là Academic thì phải có giảng viên */
+    /**
+     * 🔥 Kiểm tra ràng buộc: Nếu team là Academic thì phải có giảng viên
+     */
     @PrePersist
     private void prePersist() {
         // Nếu không có leader → kiểm tra xem creator có phải là giảng viên không
@@ -131,8 +133,7 @@ public class Team {
                 throw new IllegalStateException("Leader phải là thành viên của team!");
             }
 
-        }
-        else if (user instanceof Lecturer lecturer) {
+        } else if (user instanceof Lecturer lecturer) {
             if (this.teamType == TeamType.ACADEMIC) {
                 if (this.lecturer != null) {
                     throw new IllegalStateException("Team đã có giảng viên rồi!");

@@ -11,16 +11,28 @@ const MemberRequestList = () => {
         const fetchJoinRequests = async () => {
             const token = localStorage.getItem("token");
             try {
-                const response = await fetch(`http://localhost:8080/api/teams/${teamId}/join-requests`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/teams/${teamId}/join-requests`, // Không cần studentId nữa
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                // Kiểm tra nếu phản hồi không hợp lệ
                 if (!response.ok) {
                     throw new Error("Failed to fetch requests");
                 }
-                const data = await response.json();
+
+                // In ra phản hồi thô trước khi xử lý
+                const textResponse = await response.text();
+                console.log("Response text:", textResponse);
+
+                // Nếu phản hồi là JSON hợp lệ, chuyển đổi thành JSON
+                const data = JSON.parse(textResponse);
                 console.log("Fetched requests:", data);
+
                 setRequests(data); // Cập nhật danh sách yêu cầu
             } catch (error) {
                 console.error("Error fetching join requests:", error);
@@ -48,15 +60,15 @@ const MemberRequestList = () => {
                 throw new Error("Failed to handle request");
             }
 
-            const result = await response.json();
-            console.log("Request handled:", result);
+            const resultText = await response.text();
+            console.log("Request handled:", resultText);
 
-            // Xoá khỏi danh sách sau khi xử lý
             setRequests(prev => prev.filter(r => r.id !== request.id));
         } catch (error) {
             console.error("Error handling join request:", error);
         }
     };
+
 
     return (
         <div className="p-4 bg-white rounded-lg shadow-md">

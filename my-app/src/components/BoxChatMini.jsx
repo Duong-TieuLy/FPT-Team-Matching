@@ -8,13 +8,16 @@ export default function BoxChatMini({ user, currentUser, onClose }) {
   const [input, setInput] = useState("");  // Nội dung tin nhắn
   const messagesEndRef = useRef(null);  // Dùng để tự động scroll xuống cuối khi có tin nhắn mới
 
+  // Tạo kênh chung giữa 2 người dùng
+  const channel = `/topic/private/${Math.min(currentUser.id, user.id)}-${Math.max(currentUser.id, user.id)}`;
+
   // WebSocket để gửi và nhận tin nhắn
   const { sendMessage, messagesSocket } = useWebSocket(
       (msg) => {
         // Nhận tin nhắn mới qua WebSocket và cập nhật lại giao diện
         setMessages((prev) => [...prev, msg]);
       },
-      `/user/${currentUser.id}/queue/messages`  // Từ Spring: @SendToUser
+      channel  // Kênh chung cho 2 người
   );
 
   // Load lịch sử tin nhắn khi người dùng vào chat
@@ -23,7 +26,6 @@ export default function BoxChatMini({ user, currentUser, onClose }) {
       try {
         const response = await fetch(`http://localhost:8080/api/messages/private?user1=${currentUser.id}&user2=${user.id}`);
         const data = await response.json();
-        console.log(data);
         setMessages(data); // Lưu tin nhắn vào state
       } catch (error) {
         console.error("Error loading messages", error);
@@ -47,16 +49,13 @@ export default function BoxChatMini({ user, currentUser, onClose }) {
     const msg = {
       senderId: currentUser.id,
       receiverId: user.id,
+      senderName: user.fullName,
       content: input,
       messageType: "PRIVATE",
     };
 
     // Gửi tin nhắn qua WebSocket
     sendMessage("/app/chat.private", msg);
-
-    // Cập nhật state với tin nhắn gửi đi
-    setMessages((prev) => [...prev, msg]);
-
     setInput(""); // Xóa input sau khi gửi tin nhắn
   };
 
@@ -90,9 +89,7 @@ export default function BoxChatMini({ user, currentUser, onClose }) {
                     <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full" />
                 )}
                 <div
-                    className={`p-2 rounded-lg w-fit max-w-[80%] text-amber-700 ${
-                        msg.senderId === currentUser.id ? "bg-blue-100" : "bg-gray-200"
-                    }`}
+                    className={`p-2 rounded-lg w-fit max-w-[80%] text-amber-700 ${msg.senderId === currentUser.id ? "bg-blue-100" : "bg-gray-200"}`}
                 >
                   <p className="text-sm">{msg.content}</p>
                 </div>

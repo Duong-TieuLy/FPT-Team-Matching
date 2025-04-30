@@ -36,7 +36,7 @@ public class Task {
     // Liên kết với Student (người được giao task)
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JoinColumn(name = "student_id", nullable = true)
+    @JoinColumn(name = "student_id")
     private Student assignedToStudent;
 
     // Liên kết với Team (nhóm chứa task)
@@ -44,4 +44,12 @@ public class Task {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
+
+    @PrePersist
+    @PreUpdate
+    public void validateDeadline() {
+        if (this.deadline != null && this.deadline.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Deadline cannot be in the past");
+        }
+    }
 }

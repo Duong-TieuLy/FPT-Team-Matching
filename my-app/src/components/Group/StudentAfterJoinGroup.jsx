@@ -3,7 +3,6 @@ import React from "react";
 const StudentGroupDashboard = ({
   groupName,
   groupDescription,
-  groupKi,
   members,
   announcements,
 }) => {
@@ -12,7 +11,6 @@ const StudentGroupDashboard = ({
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-6">
         <h1 className="text-3xl font-bold mb-4">{groupName}</h1>
         <p className="text-gray-600 mb-2">Description: {groupDescription}</p>
-        <p className="text-gray-600 mb-4">Ki: {groupKi}</p>
         <h2 className="text-xl font-semibold mb-2">
           Members ({members.length})
         </h2>

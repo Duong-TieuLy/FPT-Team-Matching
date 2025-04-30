@@ -1,5 +1,6 @@
 package ut.edu.teammatching.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ut.edu.teammatching.dto.MessageDTO;
@@ -11,6 +12,7 @@ import ut.edu.teammatching.repositories.MessageRepository;
 import ut.edu.teammatching.repositories.TeamRepository;
 import ut.edu.teammatching.repositories.UserRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +54,7 @@ public class MessageService {
 
     // Send message (both private and team messages)
 
+    @Transactional
     public MessageDTO sendMessage(MessageDTO messageDTO) {
         // Retrieve sender
         User sender = userRepository.findById(messageDTO.getSenderId())
@@ -61,6 +64,7 @@ public class MessageService {
         Message message = new Message();
         message.setSender(sender);
         message.setContent(messageDTO.getContent());
+        message.setSentAt(Instant.now());
 
         if (messageDTO.getMessageType() == MessageType.PRIVATE) {
             // If it's a private message, retrieve receiver
@@ -80,7 +84,6 @@ public class MessageService {
 
         // Save the message to the database
         messageRepository.save(message);
-
         // Return the saved message as a DTO
         return convertToDTO(message);
     }

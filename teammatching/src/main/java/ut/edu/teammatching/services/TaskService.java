@@ -2,6 +2,7 @@ package ut.edu.teammatching.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import ut.edu.teammatching.dto.team.TaskDTO;
 import ut.edu.teammatching.enums.TaskStatus;
 import ut.edu.teammatching.models.Student;
 import ut.edu.teammatching.models.Task;
@@ -9,6 +10,10 @@ import ut.edu.teammatching.models.Team;
 import ut.edu.teammatching.repositories.StudentRepository;
 import ut.edu.teammatching.repositories.TaskRepository;
 import ut.edu.teammatching.repositories.TeamRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -30,14 +35,41 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy task!"));
     }
 
+    public List<TaskDTO> getTasksByTeam(Long teamId) {
+        List<Task> tasks = taskRepository.findByTeamId(teamId);  // Lấy danh sách task từ DB
+        return tasks.stream()
+                .map(TaskDTO::fromTask)  // Chuyển đổi từ Task sang TaskDTO
+                .collect(Collectors.toList());  // Thu thập vào List<TaskDTO>
+    }
+
+
+    public Task updateTaskStatus(Long taskId, TaskStatus newStatus, Long leaderId) throws Exception {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new Exception("Task not found"));
+
+        // Kiểm tra quyền của leader
+        if (task.getTeam().getLeader() == null || !task.getTeam().getLeader().getId().equals(leaderId)) {
+            throw new SecurityException("You are not authorized to update the status of this task.");
+        }
+
+        // Cập nhật trạng thái task
+        task.setStatus(newStatus);
+        return taskRepository.save(task);
+    }
+
     /**
      * Xóa một task khỏi hệ thống.
      */
     @Transactional
-    public void deleteTask(Long taskId) {
-        if (!taskRepository.existsById(taskId)) {
-            throw new RuntimeException("Không tìm thấy task để xóa!");
+    public void deleteTask(Long taskId, Long userId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy task để xóa!"));
+
+        Team team = task.getTeam();  // Assuming the task has a reference to the Team entity
+        if (team == null || !team.getLeader().getId().equals(userId)) {
+            throw new SecurityException("Bạn không có quyền xóa task này!");
         }
+
         taskRepository.deleteById(taskId);
     }
 
@@ -45,31 +77,36 @@ public class TaskService {
      * Chỉ leader của team mới có thể giao task cho thành viên.
      */
     @Transactional
-    public Task assignTask(Long leaderId, Long teamId, String taskName, String description, Long studentId) {
-        // Kiểm tra team có tồn tại không
+    public Task createTask(Long leaderId, Long teamId, String taskName, String description
+                            , LocalDate deadline, Long assignedStudentId) {
+        // 1. Kiểm tra team có tồn tại không
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy team!"));
 
-        // Kiểm tra leader có hợp lệ không
+        // 2. Kiểm tra leader có hợp lệ không
         if (!team.getLeader().getId().equals(leaderId)) {
-            throw new IllegalStateException("Chỉ leader của team mới có thể giao task!");
+            throw new IllegalStateException("Chỉ leader của team mới có thể tạo task!");
         }
 
-        // Kiểm tra sinh viên có trong team không
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên!"));
+        // 3. Nếu có chỉ định student được giao, kiểm tra student có thuộc team không
+        Student assignedStudent = null;
+        if (assignedStudentId != null) {
+            assignedStudent = studentRepository.findById(assignedStudentId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sinh viên!"));
 
-        if (!team.getStudents().contains(student)) {
-            throw new IllegalStateException("Sinh viên không thuộc team này!");
+            if (!team.getStudents().contains(assignedStudent)) {
+                throw new IllegalStateException("Sinh viên không thuộc team này!");
+            }
         }
 
-        // Tạo mới task
+        // 4. Tạo task
         Task task = new Task();
         task.setTaskName(taskName);
         task.setDescription(description);
-        task.setTeam(team);
-        task.setAssignedToStudent(student);
         task.setStatus(TaskStatus.IN_PROGRESS);
+        task.setDeadline(deadline);
+        task.setAssignedToStudent(assignedStudent);
+        task.setTeam(team);
 
         return taskRepository.save(task);
     }

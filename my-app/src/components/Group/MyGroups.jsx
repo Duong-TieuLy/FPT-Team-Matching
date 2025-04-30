@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateGroupForm from "./CreateGroupForm";
 import { useAuth } from "../../context/useAuth.jsx";
 
 const MyGroups = () => {
@@ -70,6 +69,9 @@ const MyGroups = () => {
                   className="w-24 h-24 mx-auto rounded-full object-cover mb-4"
               />
               <h2 className="text-lg font-semibold text-blue-600">{group.teamName}</h2>
+              <p className="text-xs text-gray-400 mb-1">
+                {group.teamType ? (group.teamType === "ACADEMIC" ? "ACADEMIC" : "NON_ACADEMIC") : ""}
+              </p>
               <p className="text-gray-500 text-sm">{group.description}</p>
               <div className="flex justify-around text-sm text-gray-700 mt-4">
                 <span>Member: {group.members}</span>
@@ -80,7 +82,7 @@ const MyGroups = () => {
                     navigate(`/group/${group.id}`);
                   }}
               >
-                Tham gia
+                Join
               </button>
             </div>
         ))}
@@ -91,11 +93,11 @@ const MyGroups = () => {
       <div>
         <h2 className="text-2xl font-bold mb-4 text-center">Nhóm của tôi</h2>
         {loading ? (
-            <p className="text-center">Đang tải nhóm...</p> // Hiển thị khi đang tải dữ liệu
+            <p className="text-center">Loading...</p> // Hiển thị khi đang tải dữ liệu
         ) : myGroups.length > 0 ? (
             renderGroupList(myGroups)
         ) : (
-            <p className="text-center">Bạn chưa tham gia nhóm nào.</p>
+            <p className="text-center">You are not a member of any groups.</p>
         )}
 
       </div>
