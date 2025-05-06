@@ -15,6 +15,7 @@
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.8.3",
     "dayjs": "^1.11.13",
+    "dotenv": "^16.5.0",
     "framer-motion": "^12.4.10",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.477.0",

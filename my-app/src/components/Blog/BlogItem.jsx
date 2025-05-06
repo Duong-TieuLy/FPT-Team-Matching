@@ -11,7 +11,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 dayjs.extend(relativeTime);
 dayjs.locale("vi");
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const BlogItem = ({ blogs, postId }) => {
   const {
     authorName,
@@ -36,7 +36,7 @@ const BlogItem = ({ blogs, postId }) => {
 
     try {
       await axios.post(
-        "http://localhost:8080/api/blogs/like",
+        `${API_PROJECT}/api/blogs/like`,
         {
           postId,
           userId: user.id,

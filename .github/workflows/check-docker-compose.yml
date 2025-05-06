@@ -1,0 +1,58 @@
+name: Check Docker Compose
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-docker:
+    if: false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+            -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: List files in the current directory
+        run: ls -al
+
+      - name: Create .env from .env.example
+        run: cp .env.example .env
+
+      - name: Check Docker Compose config
+        run: docker-compose --env-file .env -f docker-compose.yml config
+
+      - name: Deploy on EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            set -x
+            cd ~/deloy-teammatching/Team-matching || {
+              echo "Cloning repo because folder doesn't exist..."
+              mkdir -p ~/deloy-teammatching
+              cd ~/deloy-teammatching
+              git clone https://github.com/Tr4nMorDev/Team-matching.git
+              cd Team-matching
+            }
+
+            git pull origin master
+            docker-compose pull
+            docker-compose down
+            docker-compose up -d --build

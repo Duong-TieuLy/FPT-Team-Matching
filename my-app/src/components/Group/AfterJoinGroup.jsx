@@ -6,11 +6,11 @@ import MemberList from "./DashBoard/MemberList";
 import MemberRequestList from "./DashBoard/MemberRequestList";
 import GroupChatBox from "./DashBoard/GroupChatBox"; // Import thêm Chat Box
 import RatingForm from "./DashBoard/RatingForm";
-import TaskList from "./DashBoard/TaskList"
+import TaskList from "./DashBoard/TaskList";
 import ChangeLeader from "./DashBoard/ChangeLeader";
 import OutGroupModel from "./DashBoard/OutGroupModel";
-import {useParams} from "react-router-dom";
-
+import { useParams } from "react-router-dom";
+const API_PROJECT = import.meta.env.VITE_HOST;
 const GroupDashBoard = () => {
   const [activeTab, setActiveTab] = useState("");
   const [showOutGroupModel, setShowOutGroupModel] = useState(false);
@@ -57,11 +57,14 @@ const GroupDashBoard = () => {
           Authorization: `Bearer ${token}`, // Xác thực bằng JWT
         },
         params: {
-          userId:userId,
+          userId: userId,
         },
       };
 
-      const response = await axios.delete(`http://localhost:8080/api/teams/${teamId}/leave`, config);
+      const response = await axios.delete(
+        `${API_PROJECT}/api/teams/${teamId}/leave`,
+        config
+      );
       console.log(response.data); // Hiển thị thông báo thành công
       setShowOutGroupModel(false); // Đóng modal sau khi rời nhóm thành công
       alert("Rời nhóm thành công!");
@@ -77,54 +80,53 @@ const GroupDashBoard = () => {
   };
 
   return (
-      <main className="flex justify-center bg-gray-100 min-h-screen pt-20">
-        <div className="w-full max-w-6xl bg-white shadow-md rounded-lg p-4">
-          <div className="w-full">
-            <NotificationBar groupName="Team Awesome" notificationCount={5} />
-            <div className="flex gap-4">
-              <Sidebar
-                  onMemberClick={() =>
-                      setActiveTab(activeTab === "members" ? "" : "members")
-                  }
-                  onRequestClick={() =>
-                      setActiveTab(activeTab === "requests" ? "" : "requests")
-                  }
-                  onTaskClick={() =>
-                      setActiveTab(activeTab === "tasking" ? "" : "tasking")
-                  }
-                  onRatingClick={() =>
-                      setActiveTab(activeTab === "rating" ? "" : "rating")
-                  }
-                  onChangeLeaderClick={ () =>
-                      setActiveTab(activeTab === "changing" ? "" : "changing")
-                  }
-                  onOutGroupClick={() => setShowOutGroupModel(true)}
-              />
-              <div className="w-3/4 bg-gray-50 p-6 rounded-lg shadow-inner">
-                <h1 className="text-2xl font-semibold mb-4">Dashboard Content</h1>
-                {activeTab === "members" && <MemberList members={members} />}
-                {activeTab === "tasking" && <TaskList />}
-                {activeTab === "requests" && (
-                    <MemberRequestList requests={memberRequests} />
-                )}
-                {activeTab === "rating" && <RatingForm />}
-                {activeTab === "changing" && <ChangeLeader/>}
-                {/* Hiển thị Box Chat ở đây */}
-                {activeTab === "" && <GroupChatBox groupName="Team Awesome" />}
-              </div>
+    <main className="flex justify-center bg-gray-100 min-h-screen pt-20">
+      <div className="w-full max-w-6xl bg-white shadow-md rounded-lg p-4">
+        <div className="w-full">
+          <NotificationBar groupName="Team Awesome" notificationCount={5} />
+          <div className="flex gap-4">
+            <Sidebar
+              onMemberClick={() =>
+                setActiveTab(activeTab === "members" ? "" : "members")
+              }
+              onRequestClick={() =>
+                setActiveTab(activeTab === "requests" ? "" : "requests")
+              }
+              onTaskClick={() =>
+                setActiveTab(activeTab === "tasking" ? "" : "tasking")
+              }
+              onRatingClick={() =>
+                setActiveTab(activeTab === "rating" ? "" : "rating")
+              }
+              onChangeLeaderClick={() =>
+                setActiveTab(activeTab === "changing" ? "" : "changing")
+              }
+              onOutGroupClick={() => setShowOutGroupModel(true)}
+            />
+            <div className="w-3/4 bg-gray-50 p-6 rounded-lg shadow-inner">
+              <h1 className="text-2xl font-semibold mb-4">Dashboard Content</h1>
+              {activeTab === "members" && <MemberList members={members} />}
+              {activeTab === "tasking" && <TaskList />}
+              {activeTab === "requests" && (
+                <MemberRequestList requests={memberRequests} />
+              )}
+              {activeTab === "rating" && <RatingForm />}
+              {activeTab === "changing" && <ChangeLeader />}
+              {/* Hiển thị Box Chat ở đây */}
+              {activeTab === "" && <GroupChatBox groupName="Team Awesome" />}
             </div>
           </div>
         </div>
+      </div>
 
-        {showOutGroupModel && (
-            <OutGroupModel
-                message="Bạn xác định muốn rời nhóm chứ?"
-                onConfirm={handleOutGroup}
-                onCancel={handleCancelOutGroup}
-            />
-        )}
-
-      </main>
+      {showOutGroupModel && (
+        <OutGroupModel
+          message="Bạn xác định muốn rời nhóm chứ?"
+          onConfirm={handleOutGroup}
+          onCancel={handleCancelOutGroup}
+        />
+      )}
+    </main>
   );
 };
 

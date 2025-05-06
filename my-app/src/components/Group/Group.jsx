@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import CreateGroupForm from "./CreateGroupForm.jsx";
 import CommunityGroups from "./CommunityGroups";
 import MyGroups from "./MyGroups";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const Group = () => {
   const [showAddGroup, setShowAddGroup] = useState(false);
   const [activeTab, setActiveTab] = useState("my");

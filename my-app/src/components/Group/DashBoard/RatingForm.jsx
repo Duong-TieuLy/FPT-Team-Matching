@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const RatingForm = () => {
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -10,7 +10,7 @@ const RatingForm = () => {
     const ratingData = { rating, feedback, teamId: 1 }; // Thay teamId bằng giá trị thực tế
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/ratings",
+        `${API_PROJECT}/api/ratings`,
         ratingData
       );
       console.log("Rating submitted:", response.data);

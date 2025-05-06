@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 function SignUp({ handleToggle }) {
   const [formData, setFormData] = useState({
     username: "",
@@ -15,7 +15,7 @@ function SignUp({ handleToggle }) {
     skills: ["None"],
     hobbies: ["None"],
     projects: ["None"],
-    profilePicture: "http://localhost:8080/imagedefault.jpg",
+    profilePicture: `${API_PROJECT}/imagedefault.jpg`,
   });
 
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -76,7 +76,7 @@ function SignUp({ handleToggle }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/signup",
+        `${API_PROJECT}/api/auth/signup`,
         signupData,
         {
           headers: {

@@ -1,5 +1,5 @@
 import React from "react";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const StudentGroupDashboard = ({
   groupName,
   groupDescription,

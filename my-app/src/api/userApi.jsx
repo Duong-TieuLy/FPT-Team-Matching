@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL = "https://jsonplaceholder.typicode.com/users";
-const API_PROJECT = "http://localhost:8080";
+const API_PROJECT = import.meta.env.VITE_HOST;
 
 export const postComment = async ({ postId, comment, commentbyid, token }) => {
   console.log("post id:", postId);
@@ -26,11 +26,6 @@ export const postComment = async ({ postId, comment, commentbyid, token }) => {
     console.error("Error posting comment:", error);
     throw error;
   }
-};
-export const getUser = async (id) => {
-  const response = await fetch(`${API_URL}/${id}`);
-  if (!response.ok) throw new Error("Failed to fetch user");
-  return response.json();
 };
 async function getBlogs(page = 0, pageSize = 10) {
   try {

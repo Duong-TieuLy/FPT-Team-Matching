@@ -7,7 +7,7 @@ import TaskAssignmentDropdown from "./TaskAssignmentDropdown";
 import MailDropdown from "./MailDropdown";
 import { useAuth } from "../context/useAuth";
 import ProfileModal from "./Profile/ProfileModal";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const NavbarIcons = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showFriends, setShowFriends] = useState(false);
@@ -35,8 +35,8 @@ const NavbarIcons = () => {
         setShowTask(false);
       }
       if (
-          mailDropdownRef.current &&
-          !mailDropdownRef.current.contains(event.target)
+        mailDropdownRef.current &&
+        !mailDropdownRef.current.contains(event.target)
       ) {
         setShowMail(false);
       }
@@ -87,20 +87,16 @@ const NavbarIcons = () => {
 
         <div className="relative">
           <Mail
-              className="w-6 h-6 cursor-pointer"
-              onClick={() => {
-                if (!isLoggedIn) return setShowLogin(true);
-                setShowMail((prev) => !prev);
-              }}
+            className="w-6 h-6 cursor-pointer"
+            onClick={() => {
+              if (!isLoggedIn) return setShowLogin(true);
+              setShowMail((prev) => !prev);
+            }}
           />
           {showMail && (
-              <MailDropdown
-                  showMails={showMail}
-                  setShowMails={setShowMail}
-              />
+            <MailDropdown showMails={showMail} setShowMails={setShowMail} />
           )}
         </div>
-
 
         {isLoggedIn && user ? (
           <button

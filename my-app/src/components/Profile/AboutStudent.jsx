@@ -10,6 +10,7 @@ import {
   HopOffIcon,
 } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
+const API_PROJECT = import.meta.env.VITE_HOST;
 
 const AboutStudent = ({ about }) => {
   const { user } = useAuth(); // Lấy user từ context

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { postComment } from "../../api/userApi";
 import { useAuth } from "../../context/useAuth";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 export default function CommentForm({
   onSubmit,
   image,

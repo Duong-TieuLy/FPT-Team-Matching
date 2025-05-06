@@ -5,7 +5,7 @@ import { useAuth } from "../../context/useAuth";
 import getBlogs from "../../api/userApi";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const MainContent = () => {
   const { isLoggedIn } = useAuth();
   const [blogs, setBlogs] = useState([]);
@@ -36,7 +36,7 @@ const MainContent = () => {
 
     fetchInitialBlogs();
 
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${API_PROJECT}/ws`);
     const stompClient = Stomp.over(socket);
     stompClient.connect({}, () => {
       console.log("Connected to WebSocket");

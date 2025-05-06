@@ -6,9 +6,9 @@ import AboutStudent from "./AboutStudent";
 import FriendsList from "../FriendList";
 import axios from "axios";
 import PhotoTimeline from "./PhotoTimeline";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const ProfileStudent = ({ userId }) => {
-  const {user } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("Timeline");
   const [profileData, setProfileData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,9 +23,7 @@ const ProfileStudent = ({ userId }) => {
 
     const fetchBlogs = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8080/api/blogs/user/${idToUse}`
-        );
+        const res = await axios.get(`${API_PROJECT}/api/blogs/user/${idToUse}`);
 
         setBlogs(res.data);
         console.log("Bai post cua toi : ", res.data);
@@ -40,7 +38,7 @@ const ProfileStudent = ({ userId }) => {
   useEffect(() => {
     if (idToUse) {
       axios
-        .get(`http://localhost:8080/api/users/dto/${idToUse}`, {
+        .get(`${API_PROJECT}/api/users/dto/${idToUse}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -59,7 +57,7 @@ const ProfileStudent = ({ userId }) => {
   useEffect(() => {
     if (userId && user?.id) {
       axios
-        .get(`http://localhost:8080/api/friends/check/${user?.id}/${userId}`, {
+        .get(`${API_PROJECT}/api/friends/check/${user?.id}/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -79,7 +77,7 @@ const ProfileStudent = ({ userId }) => {
 
     try {
       await axios.post(
-        `http://localhost:8080/api/friends/request/${user?.id}/${userId}`,
+        `${API_PROJECT}/api/friends/request/${user?.id}/${userId}`,
         {},
         {
           headers: {
@@ -191,7 +189,9 @@ const ProfileStudent = ({ userId }) => {
           {activeTab === "About" && (
             <AboutStudent className="w-full" about={profileData} />
           )}
-          {activeTab === "Friends" && <FriendsList className="w-full" userId={idToUse}/>}
+          {activeTab === "Friends" && (
+            <FriendsList className="w-full" userId={idToUse} />
+          )}
         </div>
 
         {/* Photo Section - Only visible when on Timeline tab */}

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const TaskAssignmentDropdown = ({ showTasks, setShowTasks }) => {
   const dropdownRef = useRef(null);
   const [tasks, setTasks] = useState([]);
@@ -24,26 +24,6 @@ const TaskAssignmentDropdown = ({ showTasks, setShowTasks }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showTasks, setShowTasks]);
-
-  // Fetch task khi dropdown mở, nhưng tránh fetch lại nếu đã có dữ liệu gần đây
-  // useEffect(() => {
-  //   const fetchTasks = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await fetch("https://api.example.com/tasks");
-  //       const data = await response.json();
-  //       setTasks(data);
-  //     } catch (error) {
-  //       console.error("Error fetching tasks:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (showTasks && tasks.length === 0) {
-  //     fetchTasks();
-  //   }
-  // }, [showTasks]);
 
   return (
     <AnimatePresence>

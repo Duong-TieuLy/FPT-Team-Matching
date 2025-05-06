@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import axios from "axios";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const CreateBlog = () => {
   const [blogText, setBlogText] = useState("");
   const [image, setImage] = useState(null);
@@ -34,16 +34,12 @@ const CreateBlog = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await axios.post(
-        "http://localhost:8080/api/blogs",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            // Không cần Authorization nữa
-          },
-        }
-      );
+      const response = await axios.post(`${API_PROJECT}/api/blogs`, payload, {
+        headers: {
+          "Content-Type": "application/json",
+          // Không cần Authorization nữa
+        },
+      });
 
       console.log("Blog created:", response.data);
 

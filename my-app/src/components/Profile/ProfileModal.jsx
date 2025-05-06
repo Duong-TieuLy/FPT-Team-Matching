@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import EditProfileModal from "./EditProfileModal";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const ProfileModal = ({ onClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate(); // Khởi tạo useNavigate

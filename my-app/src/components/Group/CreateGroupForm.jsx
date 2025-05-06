@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useAuth } from "../../context/useAuth";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const CreateGroupForm = ({ onCreate, onClose }) => {
   const { user, token } = useAuth();
 
@@ -28,7 +28,7 @@ const CreateGroupForm = ({ onCreate, onClose }) => {
   const uploadImage = async (file) => {
     const data = new FormData();
     data.append("file", file);
-    const res = await axios.post("http://localhost:8080/api/upload", data, {
+    const res = await axios.post(`${API_PROJECT}/api/upload`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -54,16 +54,12 @@ const CreateGroupForm = ({ onCreate, onClose }) => {
     setError(null);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/teams",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_PROJECT}/api/teams`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.data) {
         onCreate && onCreate(response.data);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+const API_PROJECT = import.meta.env.VITE_HOST;
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -8,7 +9,7 @@ const UserList = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/users") // Đổi thành URL đầy đủ
+      .get(`${API_PROJECT}/api/users`) // Đổi thành URL đầy đủ
       .then((response) => {
         console.log(response.data); // Kết quả: []
       })

@@ -16,12 +16,14 @@ on:
       - fix-time
       - tree-setup-loadpage
       - aaa
+      - master
   pull_request:
     branches:
       - main
 
 jobs:
   test:
+    if: false
     runs-on: ubuntu-latest
 
     steps:

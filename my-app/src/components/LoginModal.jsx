@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import SignUp from "./FormSignup&in/SignUp";
 import SignIn from "./FormSignup&in/SingIn";
 import { useAuth } from "../context/useAuth";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const LoginModal = ({ onClose }) => {
   const { user } = useAuth(); // Lấy user từ context
   const [isSignUp, setIsSignUp] = useState(false);

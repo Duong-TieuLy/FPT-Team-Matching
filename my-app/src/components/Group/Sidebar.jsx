@@ -1,7 +1,14 @@
 import OtherSection from "./SidebarItem/OtherSection";
 import GroupChatBox from "./DashBoard/GroupChatBox";
-
-const Sidebar = ({ onMemberClick, onRequestClick, onRatingClick, onTaskClick, onChangeLeaderClick, onOutGroupClick }) => (
+const API_PROJECT = import.meta.env.VITE_HOST;
+const Sidebar = ({
+  onMemberClick,
+  onRequestClick,
+  onRatingClick,
+  onTaskClick,
+  onChangeLeaderClick,
+  onOutGroupClick,
+}) => (
   <aside className="w-1/4 bg-white p-4 rounded-xl shadow-md">
     <input
       type="text"

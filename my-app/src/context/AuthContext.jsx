@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 // Tạo context
 export const AuthContext = createContext();
 
@@ -36,11 +36,14 @@ export const AuthProvider = ({ children }) => {
   const getProtectedData = async () => {
     const storedToken = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:8080/api/protected-resource", {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-      });
+      const response = await axios.get(
+        `${API_PROJECT}/api/protected-resource`,
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching protected data:", error);
@@ -79,10 +82,10 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   return (
-      <AuthContext.Provider
-          value={{ isLoggedIn, role, user, token, login, logout, hasFetched }}
-      >
-        {children}
-      </AuthContext.Provider>
+    <AuthContext.Provider
+      value={{ isLoggedIn, role, user, token, login, logout, hasFetched }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };

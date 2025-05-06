@@ -1,7 +1,7 @@
 import { Home, Users, CheckSquare, Menu, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 const Sidebar = ({ isOpen, toggleSidebar, userRole }) => {
   const location = useLocation();
   const { isLoggedIn } = useAuth();

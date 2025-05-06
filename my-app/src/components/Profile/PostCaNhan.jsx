@@ -7,7 +7,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/vi";
-
+const API_PROJECT = import.meta.env.VITE_HOST;
 dayjs.extend(relativeTime);
 dayjs.locale("vi");
 
